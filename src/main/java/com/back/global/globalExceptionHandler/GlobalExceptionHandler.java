@@ -91,6 +91,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ServiceException.class)
+
     public RsData<Void> handle(ServiceException ex, HttpServletResponse response) {
         RsData<Void> rsData = ex.getRsData();
 
