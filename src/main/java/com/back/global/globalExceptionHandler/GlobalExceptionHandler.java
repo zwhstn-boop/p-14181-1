@@ -1,7 +1,9 @@
 package com.back.global.globalExceptionHandler;
 
 import com.back.global.rsData.RsData;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
+import com.back.global.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import java.util.Comparator;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +12,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -17,7 +20,7 @@ import java.util.stream.Collectors;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-@ControllerAdvice
+@RestControllerAdvice
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
@@ -85,5 +88,14 @@ public class GlobalExceptionHandler {
                 ),
                 BAD_REQUEST
         );
+    }
+
+    @ExceptionHandler(ServiceException.class)
+    public RsData<Void> handle(ServiceException ex, HttpServletResponse response) {
+        RsData<Void> rsData = ex.getRsData();
+
+        response.setStatus(rsData.statusCode());
+
+        return rsData;
     }
 }
